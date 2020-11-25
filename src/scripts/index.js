@@ -3,83 +3,20 @@ import store from "./store.js";
 import $ from "jquery";
 import api from "./api.js";
 import '../styles/index.css';
+import template from './template'
 
-const startPage = () => {
-  return `    <section class='start-page'>
-    <h1>Bookmarks</h1>
-    <section class = 'bookmarkForm'>
-        <button id='addBookmark' type='button'>Add Bookmark</button>
-        <select name="minimumRating" id="minimumRating" >
-            <option value='null'>Filter Ratings</option>
-            <option class='minimum' value='1'>1*</option>
-            <option class='minimum' value='2'>2*</option>
-            <option class='minimum' value='3'>3*</option>
-            <option class='minimum' value='4'>4*</option>
-            <option class='minimum' value='5'>5*</option>
-          </select>
-    </section>
-    ${generateBookmark(store)}
-    </section>`;
-};
-
-/*const generateBookmark = (store) => {
-  api.getItems().push(store.items);
-};*/
-const generateBookmark = (store) => {
-  if(store.filtered === false){return store.items
-    .map((item, i) => {
-      if (item.expanded) {
-        return `<section class='bookmark' data-item-id='${item.id}'> <p>${item.title}</p><p>Rating: ${item.rating}</p><p>${item.desc}</p><a href='${item.url}'>Visit Site: ${item.url}</a><button  class='less'>See Less</button><button class='delete'>Delete</button></section>`;
-      } else {
-        return `<section class='bookmark' data-item-id='${item.id}'><p>${item.title}</p><p>Rating: ${item.rating}</p><button  class='expand'>See More</button><button  class='delete'>Delete</button></section>`;
-      }
-    })
-    .join("");
-}else{
-  return store.filteredItems.map((item, i) => {
-    if (item.expanded) {
-      return `<section class='bookmark' data-item-id='${item.id}'> <p>${item.title}</p><p>Rating: ${item.rating}</p><p>${item.desc}</p><a href='${item.url}'>Visit Site: ${item.url}</a><button  class='less'>See Less</button><button class='delete'>Delete</button></section>`;
-    } else {
-      return `<section class='bookmark' data-item-id='${item.id}'><p>${item.title}</p><p>Rating: ${item.rating}</p><button  class='expand'>See More</button><button  class='delete'>Delete</button></section>`;
-    }
-  })
-  .join("");
-}
-};
-
-const newBookmarkTemp = () => {
-  return `<h1>Bookmarks</h1>
-     <div>
-        <form>
-           <label for='url'>New Bookmark</label>
-           <br>
-           <input type='url' name='url' id ='url' placeholder='url goes here' required>
-        </form>
-        
-        <div>
-            <form>
-                <section class='bookmarkName'>
-                    <input type='text' id='bookmarkName' placeholder='Add a name' required>
-                </section>
-                <h5>Rating</h5>
-                <ul class='rating'>
-                    <input class='star' name='rating' id='1' type='radio' value='1'>
-                    <input class='star' name='rating' id='2' type='radio' value='2'>
-                    <input class='star' name='rating' id='3' type='radio' value='3'>
-                    <input class='star' name='rating' id='4' type='radio' value='4'>
-                    <input class='star' name='rating' id='5' type='radio' value='5'>
-                </ul>
-                    <input type='text' id='bookmarkDescription' placeholder='Add a description' required>
-            </form>
-        </div>
-        <button type='submit' id='submit'>Submit</button>
-        <button type='button' id='cancle'>Cancle</button>
-    </div>`;
-};
 
 function getItemIdFromElement(item) {
   return $(item).closest("section").data("item-id");
 }
+
+/*function validateForm(){
+  let url = $("#url").val();
+  if(!url.startsWith('https://') || !url.startsWith('http://')){
+    alert('url must follow format: https://www.YOURWEBSITE.com');
+    throw new Error('url must start with https://');
+}
+}*/
 
 //these functions execute functions after the coresponding button is clicked
 const handleAddBookmark = () => {
@@ -92,7 +29,10 @@ const handleAddBookmark = () => {
 };
 
 const handleSubmit = () => {
-  $("main").on("click", "#submit", function () {
+  $("main").on("submit", "#bookmarkForm", function (evt) {
+    evt.preventDefault();
+    try{
+      //validateForm();
     let title = $("#bookmarkName").val();
     let url = $("#url").val();
     let desc = $("#bookmarkDescription").val();
@@ -108,9 +48,15 @@ const handleSubmit = () => {
         expanded,
       })
       .then(function (bookmark) {
+        console.log(bookmark);
+        bookmark.expanded = false;
         store.items.push(bookmark);
         render();
       });
+    }
+    catch(err){
+      console.log(err.message);
+    }
   });
 };
 
@@ -166,8 +112,6 @@ const handleFilter = ()=>{
   }
 })*/
 //these funcitons toggle the boolean values for expanded and started
-
-
 const toggleExpanded = (id) =>{
   const bookmark = store.items.find((item) =>{
     return item.id === id;
@@ -176,14 +120,14 @@ const toggleExpanded = (id) =>{
   render();
 } 
 
-const toggleFiltered = () =>{
+/*const toggleFiltered = () =>{
   if(store.filtered === false){
     store.filtered = true;
   } else if(store.filtered === true){
     store.filtered = false;
   }
   render();
-};
+};*/
 
 const toggleStarted = () => {
   if (store.started === false) {
@@ -196,10 +140,24 @@ const toggleStarted = () => {
 //this function dynamicly renders content to the DOM
 function render() {
   if (!store.started) {
-    $("main").html(startPage());
-    $('#minimumRating').val(store.minimum);
+    if(store.filtered === false){
+      $("main").html(template.startPage());
+      const html = template.generateBookmarkStrings(store.items);
+      $('#bookmarkResults').html(html);
+    } else{
+      $("main").html(template.startPage());
+      $('#minimumRating').val(store.minimum);
+      const filter = store.items.filter(bookmark => {
+        return bookmark.rating >= store.minimum;
+        
+      })
+      const html = template.generateBookmarkStrings(filter);
+      $('#bookmarkResults').html(html);
+    }
+    
+    
   } else {
-    $("main").html(newBookmarkTemp());
+    $("main").html(template.newBookmarkTemp());
   }
 }
 
