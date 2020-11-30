@@ -71,7 +71,7 @@ const newBookmarkTemp = () => {
   return `<h1>Bookmarks</h1>
        <div>
           <form id='bookmarkForm'>
-             <label for='url'>New Bookmark</label>
+             <label for='bookmarkForm'>New Bookmark</label>
              <br>
              <label for='url'>Web Address</label>
              <input type='url' name='url' id ='url' placeholder='https://...' required>

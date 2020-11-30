@@ -111,6 +111,8 @@ const handleFilter = ()=>{
     return store.items;
   }
 })*/
+
+
 //these funcitons toggle the boolean values for expanded and started
 const toggleExpanded = (id) =>{
   const bookmark = store.items.find((item) =>{
@@ -154,8 +156,6 @@ function render() {
       const html = template.generateBookmarkStrings(filter);
       $('#bookmarkResults').html(html);
     }
-    
-    
   } else {
     $("main").html(template.newBookmarkTemp());
   }
