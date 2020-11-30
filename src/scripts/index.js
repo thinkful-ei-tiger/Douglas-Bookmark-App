@@ -60,8 +60,8 @@ const handleSubmit = () => {
   });
 };
 
-const handleCancle = () => {
-  $("main").on("click", "#cancle", function () {
+const handleCancel = () => {
+  $("main").on("click", "#cancel", function () {
     toggleStarted();
   });
 };
@@ -168,7 +168,7 @@ const main = () => {
   handleSeeMore();
   handleSeeLess();
   handleDelete();
-  handleCancle();
+  handleCancel();
   handleSubmit();
   handleAddBookmark();
   handleFilter();

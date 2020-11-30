@@ -71,16 +71,15 @@ const newBookmarkTemp = () => {
   return `<h1>Bookmarks</h1>
        <div>
           <form id='bookmarkForm'>
-             <label for='bookmarkForm'>New Bookmark</label>
+             <h2>New Bookmark</h2>
              <br>
              <label for='url'>Web Address</label>
              <input type='url' name='url' id ='url' placeholder='https://...' required>
-                  <section class='bookmarkName'>
-                      <lable for='bookmarkName'>Name</lable>
-                      <input type='text' id='bookmarkName' placeholder='Add a name' required>
-                  </section>
-                  <p>Rating</p>
-                  <ul class='rating'>
+             <br>
+             <label for='bookmarkName'>Name</label>
+             <input type='text' id='bookmarkName' placeholder='Add a name' required>
+                  <section class='rating'>
+                  <h2>Rating</h2>
                       <label for='1'>1</label>
                       <input class='star' name='rating' id='1' type='radio' value='1' required>
                       <label for='2'>2</label>
@@ -91,11 +90,11 @@ const newBookmarkTemp = () => {
                       <input class='star' name='rating' id='4' type='radio' value='4' required>
                       <label for='5'>5</label>
                       <input class='star' name='rating' id='5' type='radio' value='5' required>
-                  </ul>
+                  </section>
                       <label for='bookmarkDescription'>Description</label>
                       <input type='text' id='bookmarkDescription' placeholder='Add a description' required>
           <button type='submit' id='submit'>Submit</button>
-          <button type='button' id='cancle'>Cancle</button>
+          <button type='button' id='cancel'>Cancel</button>
           </form>
       </div>`;
 };
